@@ -258,13 +258,39 @@ function ChatWidget() {
     setInput("");
 
     // Placeholder for Groq/AI logic
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        text: "Thanks for your message! This is currently a demo. We'll be connected to our AI assistant soon to help you with your order.", 
-        isBot: true 
-      }]);
-    }, 1000);
-  };
+   const handleSend = async () => {
+  if (!input.trim()) return;
+
+  const userInput = input;
+
+  // Add user message immediately
+  setMessages(prev => [...prev, { text: userInput, isBot: false }]);
+  setInput("");
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userInput })
+    });
+
+    const data = await res.json();
+
+    // Add bot response
+    setMessages(prev => [
+      ...prev,
+      { text: data.reply || "No response", isBot: true }
+    ]);
+
+  } catch (err) {
+    setMessages(prev => [
+      ...prev,
+      { text: "⚠️ Error connecting to AI.", isBot: true }
+    ]);
+  }
+};
 
   return (
     <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
