@@ -118,7 +118,7 @@ export default function App() {
             >
               {/* Replace the URL below with your logo.png after uploading */}
               <img 
-                src="logo.png" 
+                src="/logo.png" 
                 className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 border-border shadow-2xl hover:border-primary transition-all bg-card" 
                 referrerPolicy="no-referrer"
                 alt="Tiger Town Pizza Featured Logo"
