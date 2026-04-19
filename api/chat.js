@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content: "You are a friendly pizza shop assistant. Help customers choose pizzas, suggest combos, and take orders."
+            content: "You are a friendly pizza shop assistant. Help customers choose pizzas, suggest combos, and take orders, keep messages short and to the point but also friendly."
           },
           {
             role: "user",
