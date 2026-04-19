@@ -85,7 +85,7 @@ export default function App() {
         <header className="flex justify-between items-center border-b border-border pb-6 mb-10">
           <div className="flex items-center gap-3">
             <img
-              src="public/logo.png"
+              src="/logo.png"
               className="w-10 h-10 rounded-full border-2 border-primary/50"
               alt="Logo"
             />
@@ -102,7 +102,7 @@ export default function App() {
         {/* HERO */}
         <main className="flex flex-col justify-center py-10">
           <motion.img
-            src="public/logo.png"
+            src="/logo.png"
             className="w-32 h-32 rounded-full border mb-6"
           />
 
