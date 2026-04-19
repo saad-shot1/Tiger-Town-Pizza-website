@@ -20,20 +20,21 @@ export default async function handler(req) {
       })
     });
 
-    const data = await response.json();
+    cconst data = await response.json();
 
-    return new Response(JSON.stringify({
-      reply: data?.choices?.[0]?.message?.content || "No reply"
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+// DEBUG (VERY IMPORTANT)
+console.log("GROQ RAW:", JSON.stringify(data, null, 2));
 
-  } catch (err) {
-    return new Response(JSON.stringify({
-      error: err.message
-    }), {
-      status: 500
-    });
-  }
+let reply = "No reply";
+
+if (data.choices && data.choices.length > 0) {
+  reply =
+    data.choices[0]?.message?.content ||
+    data.choices[0]?.text ||
+    "No reply";
 }
+
+return new Response(JSON.stringify({ reply }), {
+  status: 200,
+  headers: { "Content-Type": "application/json" }
+});
