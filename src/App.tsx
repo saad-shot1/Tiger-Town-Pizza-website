@@ -250,13 +250,6 @@ function ChatWidget() {
     }
   }, [messages]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    
-    const userMsg = { text: input, isBot: false };
-    setMessages(prev => [...prev, userMsg]);
-    setInput("");
-
     // Placeholder for Groq/AI logic
    const handleSend = async () => {
   if (!input.trim()) return;
