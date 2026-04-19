@@ -128,6 +128,7 @@ export default function App() {
           <p>{PHONE}</p>
         </footer>
       </div>
+
       {/* 💬 CHAT BOX */}
 {isChatOpen && (
   <div
@@ -179,8 +180,7 @@ export default function App() {
             padding: "8px 12px",
             borderRadius: "12px",
             maxWidth: "75%",
-            fontSize: "14px",
-            lineHeight: "1.4"
+            fontSize: "14px"
           }}
         >
           {msg.text}
@@ -189,19 +189,12 @@ export default function App() {
     </div>
 
     {/* INPUT */}
-    <div
-      style={{
-        display: "flex",
-        borderTop: "1px solid #222"
-      }}
-    >
+    <div style={{ display: "flex", borderTop: "1px solid #222" }}>
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            sendMessage();
-          }
+          if (e.key === "Enter") sendMessage();
         }}
         placeholder="Type your message..."
         style={{
