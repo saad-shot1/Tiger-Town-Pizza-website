@@ -53,10 +53,10 @@ export default function App() {
         <header className="flex justify-between items-center border-b border-border pb-6 mb-10">
           <div className="flex items-center gap-3">
             <img 
-              src="https://picsum.photos/seed/tigerlogo/100/100" 
-              className="w-8 h-8 rounded-lg object-cover border border-primary/30" 
+              src="https://picsum.photos/seed/tigertownlogo/200/200" 
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary/50" 
               referrerPolicy="no-referrer"
-              alt="Tiger Logo"
+              alt="Tiger Town Pizza Logo"
             />
             <div className="logo text-2xl font-black uppercase tracking-wider text-primary">
               {BUSINESS_NAME}
@@ -116,11 +116,12 @@ export default function App() {
                animate={{ opacity: 1, scale: 1 }}
                className="mb-8"
             >
+              {/* Replace the URL below with your logo.png after uploading */}
               <img 
-                src="https://picsum.photos/seed/tigerhero/600/600" 
-                className="w-24 h-24 md:w-32 md:h-32 rounded-3xl object-cover border-2 border-border grayscale hover:grayscale-0 transition-all shadow-2xl" 
+                src="https://picsum.photos/seed/tigertownbrand/800/800" 
+                className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 border-border shadow-2xl hover:border-primary transition-all bg-card" 
                 referrerPolicy="no-referrer"
-                alt="Tiger Branding"
+                alt="Tiger Town Pizza Featured Logo"
               />
             </motion.div>
             <div className="mb-6">
