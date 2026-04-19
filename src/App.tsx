@@ -180,7 +180,7 @@ export default function App() {
         fontWeight: "bold"
       }}
     >
-      🍕 Tiger Town Chat
+      🍕 NEW CHAT UI
     </div>
 
     {/* MESSAGES */}
