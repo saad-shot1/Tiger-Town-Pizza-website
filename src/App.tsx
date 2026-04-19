@@ -154,54 +154,104 @@ export default function App() {
       </div>
 
       {/* 💬 CHAT BOX */}
-      {isChatOpen && (
+{isChatOpen && (
+  <div
+    style={{
+      position: "fixed",
+      bottom: "90px",
+      right: "20px",
+      width: "340px",
+      height: "450px",
+      background: "#0f0f0f",
+      borderRadius: "16px",
+      boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+      zIndex: 9999
+    }}
+  >
+    {/* HEADER */}
+    <div
+      style={{
+        padding: "12px",
+        background: "#ff7a00",
+        color: "white",
+        fontWeight: "bold"
+      }}
+    >
+      🍕 Tiger Town Chat
+    </div>
+
+    {/* MESSAGES */}
+    <div
+      style={{
+        flex: 1,
+        padding: "10px",
+        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px"
+      }}
+    >
+      {messages.map((msg, i) => (
         <div
+          key={i}
           style={{
-            position: "fixed",
-            bottom: "90px",
-            right: "20px",
-            width: "320px",
-            background: "#111",
+            alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+            background: msg.role === "user" ? "#ff7a00" : "#1f1f1f",
             color: "white",
+            padding: "8px 12px",
             borderRadius: "12px",
-            boxShadow: "0 4px 25px rgba(0,0,0,0.5)",
-            padding: "12px",
-            zIndex: 9999
+            maxWidth: "75%",
+            fontSize: "14px",
+            lineHeight: "1.4"
           }}
         >
-          <h3>🍕 Tiger Town AI</h3>
-
-          <div style={{ maxHeight: "250px", overflowY: "auto", fontSize: "14px" }}>
-            {messages.map((msg, i) => (
-              <div key={i}>
-                <b>{msg.role === "user" ? "You" : "Bot"}:</b> {msg.text}
-              </div>
-            ))}
-          </div>
-
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about menu..."
-            style={{ width: "100%", marginTop: "10px", padding: "8px" }}
-          />
-
-          <button
-            onClick={sendMessage}
-            style={{
-              width: "100%",
-              marginTop: "5px",
-              padding: "8px",
-              background: "#ff7a00",
-              border: "none",
-              color: "white",
-              fontWeight: "bold"
-            }}
-          >
-            Send
-          </button>
+          {msg.text}
         </div>
-      )}
+      ))}
+    </div>
+
+    {/* INPUT */}
+    <div
+      style={{
+        display: "flex",
+        borderTop: "1px solid #222"
+      }}
+    >
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        }}
+        placeholder="Type your message..."
+        style={{
+          flex: 1,
+          padding: "10px",
+          background: "transparent",
+          border: "none",
+          outline: "none",
+          color: "white"
+        }}
+      />
+
+      <button
+        onClick={sendMessage}
+        style={{
+          padding: "10px 16px",
+          background: "#ff7a00",
+          border: "none",
+          color: "white",
+          fontWeight: "bold",
+          cursor: "pointer"
+        }}
+      >
+        ➤
+      </button>
     </div>
   );
 }
