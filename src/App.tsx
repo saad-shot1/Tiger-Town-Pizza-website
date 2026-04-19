@@ -1,18 +1,30 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { motion } from "motion/react";
-import {
-  Phone,
-  MapPin,
-  Utensils,
-  ShoppingBag,
-  Truck,
+import { 
+  Phone, 
+  MessageCircle, 
+  MapPin, 
+  Clock, 
+  Utensils, 
+  ShoppingBag, 
+  Truck, 
+  ChevronRight,
   Menu,
-  X
+  X,
+  Send
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 const BUSINESS_NAME = "Tiger Town Pizza";
+const TAGLINE = "Fierce Flavor. Fresh Pizza.";
 const PHONE = "+16203775002";
+const WHATSAPP = "+16203775002";
 const ADDRESS = "302 N Main St, St John, KS 67576";
+const MAPS_LINK = "https://maps.app.goo.gl/ExixzmemHCf1RFXp8";
 
 const HOURS = [
   { day: "Sunday", time: "11 AM – 8 PM" },
@@ -21,231 +33,320 @@ const HOURS = [
   { day: "Wednesday", time: "11 AM – 8 PM" },
   { day: "Thursday", time: "11 AM – 8 PM" },
   { day: "Friday", time: "11 AM – 8 PM" },
-  { day: "Saturday", time: "11 AM – 8 PM" }
+  { day: "Saturday", time: "11 AM – 8 PM" },
 ];
 
 const SERVICES = [
   { title: "Takeout", icon: ShoppingBag },
   { title: "Dine-in", icon: Utensils },
   { title: "Delivery", icon: Truck },
-  { title: "Online Order", icon: ShoppingBag }
+  { title: "Online Order", icon: ShoppingBag },
 ];
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // 💬 CHAT STATE
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState<any[]>([]);
-  const [input, setInput] = useState("");
-
-  const messagesEndRef = useRef<any>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    const userMsg = { role: "user", text: input };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: input })
-      });
-
-      const data = await res.json();
-
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", text: data.reply }
-      ]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", text: "Error connecting to chat." }
-      ]);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-bg text-white font-sans">
-
-      {/* 🔥 MAIN WEBSITE */}
+    <div className="min-h-screen bg-bg text-white font-sans selection:bg-primary selection:text-white relative">
       <div className="max-w-7xl mx-auto px-4 md:px-10 py-10 flex flex-col min-h-screen">
-
-        {/* HEADER */}
+        
+        {/* Header */}
         <header className="flex justify-between items-center border-b border-border pb-6 mb-10">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              className="w-10 h-10 rounded-full border-2 border-primary/50"
-              alt="Logo"
+            <img 
+              src="/logo.png" 
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary/50" 
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/tigertownlogo/200/200';
+              }}
+              referrerPolicy="no-referrer"
+              alt="Tiger Town Pizza Logo"
             />
-            <div className="text-2xl font-black text-primary">
+            <div className="logo text-2xl font-black uppercase tracking-wider text-primary">
               {BUSINESS_NAME}
             </div>
           </div>
 
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X /> : <Menu />}
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex gap-6 mr-6">
+              {['Home', 'Menu', 'About Us', 'Contact'].map((item) => (
+                <span key={item} className="text-sm font-medium text-dim hover:text-white cursor-pointer transition-colors">
+                  {item}
+                </span>
+              ))}
+            </div>
+            <a
+              href={`tel:${PHONE}`}
+              className="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:opacity-90 transition-opacity"
+            >
+              Book Now
+            </a>
+          </div>
+
+          {/* Mobile Nav Toggle */}
+          <button className="md:hidden p-2 text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </header>
 
-        {/* HERO */}
-        <main className="flex flex-col justify-center py-10">
-          <motion.img
-            src="/logo.png"
-            className="w-32 h-32 rounded-full border mb-6"
-          />
-
-          <h1 className="text-5xl font-black mb-4">
-            Fierce Flavor. Fresh Pizza.
-          </h1>
-
-          <p className="text-gray-300 mb-6">
-            Premium, stone-baked pizzas with bold flavors.
-          </p>
-
-          <a
-            href={`tel:${PHONE}`}
-            className="bg-primary px-6 py-3 rounded-lg font-bold w-fit"
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="md:hidden bg-card border border-border rounded-xl px-4 py-6 mb-8 flex flex-col gap-4 overflow-hidden"
           >
-            Order Now
-          </a>
-        </main>
+            {['Home', 'Menu', 'About Us', 'Contact'].map((item) => (
+              <span key={item} className="text-lg font-medium text-white py-2 border-b border-white/5">
+                {item}
+              </span>
+            ))}
+            <a
+              href={`tel:${PHONE}`}
+              className="w-full bg-primary text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 mt-4"
+            >
+              Call Now
+            </a>
+          </motion.div>
+        )}
 
-        {/* SIDEBAR / INFO */}
-        <div className="grid md:grid-cols-2 gap-6 mt-10">
+        <div className="grid lg:grid-cols-[1fr_340px] gap-10 flex-grow">
           
-          <div className="bg-card border p-4 rounded-lg">
-            <h3 className="text-primary mb-2">Services</h3>
-            {SERVICES.map((s) => (
-              <div key={s.title}>{s.title}</div>
-            ))}
-          </div>
+          {/* Main Content (Hero) */}
+          <main className="flex flex-col justify-center py-10 lg:pr-10">
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.9 }}
+               animate={{ opacity: 1, scale: 1 }}
+               className="mb-8"
+            >
+              <img 
+                src="/logo.png" 
+                className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 border-border shadow-2xl hover:border-primary transition-all bg-card" 
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/tigertownbrand/800/800';
+                }}
+                referrerPolicy="no-referrer"
+                alt="Tiger Town Pizza Featured Logo"
+              />
+            </motion.div>
+            <div className="mb-6">
+              <span className="inline-block bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold tracking-wider">
+                OPEN TODAY UNTIL 8:00 PM
+              </span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight mb-8">
+              Fierce Flavor.<br />
+              <span className="text-primary underline decoration-border underline-offset-8 decoration-4">Fresh Pizza.</span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-dim mb-10 max-w-xl leading-relaxed">
+              Your local destination for premium, stone-baked pizzas in the heart of St John. Fresh ingredients, hand-tossed dough, and the boldest flavors in Kansas.
+            </p>
 
-          <div className="bg-card border p-4 rounded-lg">
-            <h3 className="text-primary mb-2">Hours</h3>
-            {HOURS.map((h) => (
-              <div key={h.day}>{h.day}: {h.time}</div>
-            ))}
-          </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a
+                href={`tel:${PHONE}`}
+                className="px-10 py-4 bg-primary text-white rounded-lg font-bold text-lg hover:opacity-90 transition-opacity text-center"
+              >
+                Order Takeout
+              </a>
+              <button
+                className="px-10 py-4 bg-transparent border border-border text-white rounded-lg font-bold text-lg hover:bg-white/5 transition-colors"
+              >
+                View Full Menu
+              </button>
+            </div>
+          </main>
 
+          {/* Sidebar */}
+          <aside className="sidebar flex flex-col gap-6">
+            
+            {/* Services Card */}
+            <div className="card bg-card border border-border rounded-xl p-6">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-4 pb-2 border-b border-white/5">
+                Main Services
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {SERVICES.map((s) => (
+                  <div key={s.title} className="bg-white/5 border border-border p-3 rounded-lg flex flex-col items-center justify-center text-center gap-1 group hover:border-primary/50 transition-colors">
+                    <s.icon size={16} className="text-dim group-hover:text-primary transition-colors" />
+                    <span className="text-[13px] font-semibold">{s.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Opening Hours Card */}
+            <div className="card bg-card border border-border rounded-xl p-6">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-4 pb-2 border-b border-white/5">
+                Opening Hours
+              </h3>
+              <ul className="space-y-2">
+                {HOURS.map((h) => (
+                  <li key={h.day} className={`flex justify-between text-sm py-1 border-b border-white/5 last:border-0 ${h.closed ? 'text-red-500' : 'text-gray-300'}`}>
+                    <span className="font-medium">{h.day}</span>
+                    <span className="font-bold">{h.time}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Location Card */}
+            <div className="card bg-card border border-border rounded-xl p-6">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-4 pb-2 border-b border-white/5">
+                Location
+              </h3>
+              <p className="text-sm text-dim mb-4">{ADDRESS}</p>
+              <div className="w-full h-32 bg-border/20 rounded-lg flex items-center justify-center relative overflow-hidden group cursor-pointer border border-border hover:border-primary/30 transition-colors" onClick={() => window.open(MAPS_LINK, '_blank')}>
+                <MapPin className="text-dim group-hover:text-primary transition-colors z-10" size={24} />
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute bottom-2 text-[10px] text-dim tracking-[0.2em] uppercase font-bold">ST JOHN, KANSAS</span>
+              </div>
+            </div>
+
+          </aside>
         </div>
 
-        {/* FOOTER */}
-        <footer className="mt-auto pt-10 border-t border-border text-sm">
-          <p>{ADDRESS}</p>
-          <p>{PHONE}</p>
+        {/* Info Footer Grid */}
+        <footer className="info-footer grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-10 border-t border-border">
+          <div className="info-item">
+            <h4 className="text-[11px] font-bold text-dim uppercase tracking-widest mb-2">Call Us</h4>
+            <p className="text-sm font-bold">{PHONE}</p>
+          </div>
+          <div className="info-item">
+            <h4 className="text-[11px] font-bold text-dim uppercase tracking-widest mb-2">WhatsApp</h4>
+            <p className="text-sm font-bold">{WHATSAPP}</p>
+          </div>
+          <div className="info-item">
+            <h4 className="text-[11px] font-bold text-dim uppercase tracking-widest mb-2">Address</h4>
+            <p className="text-sm font-bold">St John, KS 67576</p>
+          </div>
+          <div className="info-item">
+            <h4 className="text-[11px] font-bold text-dim uppercase tracking-widest mb-2">Email</h4>
+            <p className="text-sm font-bold italic opacity-70">hello@tigertownpizza.com</p>
+          </div>
         </footer>
 
       </div>
 
-      {/* 💬 CHAT BUTTON */}
-      <div
-        onClick={() => setIsChatOpen(!isChatOpen)}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          background: "#ff7a00",
-          color: "white",
-          borderRadius: "50%",
-          width: "60px",
-          height: "60px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "24px",
-          cursor: "pointer",
-          zIndex: 9999
-        }}
-      >
-        💬
-      </div>
+      <ChatWidget />
+    </div>
+  );
+}
 
-      {/* 💬 CHAT BOX */}
-      {isChatOpen && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "90px",
-            right: "20px",
-            width: "340px",
-            height: "450px",
-            background: "#0f0f0f",
-            borderRadius: "16px",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            zIndex: 9999
-          }}
+function ChatWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ text: string; isBot: boolean }[]>([
+    { text: "Hi! How can I help you today? You can ask me about our menu or delivery area.", isBot: true }
+  ]);
+  const [input, setInput] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    
+    const userMsg = { text: input, isBot: false };
+    setMessages(prev => [...prev, userMsg]);
+    setInput("");
+
+    // Placeholder for Groq/AI logic
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        text: "Thanks for your message! This is currently a demo. We'll be connected to our AI assistant soon to help you with your order.", 
+        isBot: true 
+      }]);
+    }, 1000);
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="bg-card border border-border w-[90vw] sm:w-[380px] h-[500px] rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-4"
         >
-          <div style={{ padding: "12px", background: "#ff7a00", fontWeight: "bold" }}>
-            🍕 Tiger Town Chat
-          </div>
-
-          <div style={{
-            flex: 1,
-            padding: "10px",
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px"
-          }}>
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                style={{
-                  alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
-                  background: msg.role === "user" ? "#ff7a00" : "#1f1f1f",
-                  padding: "8px 12px",
-                  borderRadius: "12px",
-                  maxWidth: "75%"
-                }}
-              >
-                {msg.text}
+          {/* Chat Header */}
+          <div className="bg-primary p-5 flex justify-between items-center shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                <span className="text-primary font-bold">TTP</span>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div style={{ display: "flex", borderTop: "1px solid #222" }}>
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Type your message..."
-              style={{
-                flex: 1,
-                padding: "10px",
-                background: "transparent",
-                border: "none",
-                color: "white"
-              }}
-            />
-            <button
-              onClick={sendMessage}
-              style={{
-                padding: "10px",
-                background: "#ff7a00",
-                border: "none"
-              }}
+              <div>
+                <div className="text-white font-bold text-sm">Tiger Town Assistant</div>
+                <div className="text-white/70 text-[10px] uppercase font-bold tracking-widest flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                  Online
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="text-white/80 hover:text-white p-1"
             >
-              ➤
+              <X size={20} />
             </button>
           </div>
-        </div>
+
+          {/* Chat Messages */}
+          <div 
+            ref={scrollRef}
+            className="flex-grow overflow-y-auto p-6 flex flex-col gap-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+          >
+            {messages.map((m, i) => (
+              <div 
+                key={i} 
+                className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${
+                  m.isBot 
+                    ? "bg-white/5 text-white self-start border border-border" 
+                    : "bg-primary text-white self-end"
+                }`}
+              >
+                {m.text}
+              </div>
+            ))}
+          </div>
+
+          {/* Chat Input */}
+          <div className="p-4 border-t border-border bg-black/20">
+            <div className="relative">
+              <input 
+                type="text" 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Type a message..."
+                className="w-full bg-white/5 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors pr-12"
+              />
+              <button 
+                onClick={handleSend}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:text-white transition-colors"
+              >
+                <Send size={18} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
       )}
+
+      {/* Toggle Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:brightness-110 transition-all border-4 border-bg"
+      >
+        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
+      </motion.button>
     </div>
   );
 }
