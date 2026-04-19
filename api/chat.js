@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
+      return res.status(405).json({ reply: "Only POST allowed" });
     }
 
     const { message } = req.body;
@@ -13,12 +13,8 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192", // 🔥 CHANGE THIS (IMPORTANT)
+        model: "llama3-8b-8192",
         messages: [
-          {
-            role: "system",
-            content: "You are a helpful pizza shop assistant."
-          },
           {
             role: "user",
             content: message || "Hello"
@@ -29,20 +25,14 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // 🔥 SHOW REAL ERROR IF ANY
-    if (data.error) {
-      console.error("GROQ ERROR:", data.error);
-      return res.status(500).json({
-        reply: "Groq Error: " + data.error.message
-      });
-    }
+    console.log("GROQ RAW:", data);
 
+    // 🔥 FORCE RETURN RAW DATA FOR DEBUG
     return res.status(200).json({
-      reply: data.choices[0].message.content
+      reply: JSON.stringify(data)
     });
 
   } catch (err) {
-    console.error("SERVER ERROR:", err);
     return res.status(500).json({
       reply: "Server error: " + err.message
     });
