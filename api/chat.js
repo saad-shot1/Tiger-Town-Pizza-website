@@ -13,8 +13,12 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "llama-3.1-8b-instant", // ✅ FIXED MODEL
         messages: [
+          {
+            role: "system",
+            content: "You are a friendly pizza shop assistant. Help customers choose pizzas, suggest combos, and take orders."
+          },
           {
             role: "user",
             content: message || "Hello"
@@ -25,11 +29,14 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("GROQ RAW:", data);
+    if (data.error) {
+      return res.status(500).json({
+        reply: data.error.message
+      });
+    }
 
-    // 🔥 FORCE RETURN RAW DATA FOR DEBUG
     return res.status(200).json({
-      reply: JSON.stringify(data)
+      reply: data.choices[0].message.content
     });
 
   } catch (err) {
