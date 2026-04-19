@@ -1,9 +1,10 @@
 export default async function handler(req: any, res: any) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   try {
+    // DEBUG: check if key exists
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(500).json({ error: "Missing GROQ_API_KEY" });
+    }
+
     const { message } = req.body;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -26,11 +27,22 @@ export default async function handler(req: any, res: any) {
 
     const data = await response.json();
 
-    res.status(200).json({
+    // DEBUG: send full response back
+    if (!data.choices) {
+      return res.status(500).json({
+        error: "Groq API failed",
+        full: data
+      });
+    }
+
+    return res.status(200).json({
       reply: data.choices[0].message.content
     });
 
-  } catch (error) {
-    res.status(500).json({ error: "Error" });
+  } catch (err: any) {
+    return res.status(500).json({
+      error: "Server crash",
+      details: err.message
+    });
   }
 }
