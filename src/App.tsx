@@ -227,3 +227,54 @@ export default function App() {
     </div>
   );
 }
+import { useState } from "react";
+
+function App() {
+  const [messages, setMessages] = useState<any[]>([]);
+  const [input, setInput] = useState("");
+
+  const sendMessage = async () => {
+    if (!input) return;
+
+    const userMsg = { role: "user", text: input };
+    setMessages((prev) => [...prev, userMsg]);
+
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: input }),
+    });
+
+    const data = await res.json();
+
+    const botMsg = { role: "bot", text: data.reply };
+    setMessages((prev) => [...prev, botMsg]);
+
+    setInput("");
+  };
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>🍕 Tiger Town Chat</h1>
+
+      <div style={{ maxWidth: 400 }}>
+        {messages.map((msg, i) => (
+          <div key={i}>
+            <b>{msg.role === "user" ? "You" : "Bot"}:</b> {msg.text}
+          </div>
+        ))}
+      </div>
+
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Ask something..."
+      />
+      <button onClick={sendMessage}>Send</button>
+    </div>
+  );
+}
+
+export default App;
