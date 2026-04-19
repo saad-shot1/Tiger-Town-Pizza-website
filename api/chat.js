@@ -1,18 +1,11 @@
 export default async function handler(req, res) {
   try {
-    // Only allow POST
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method not allowed" });
     }
 
-    // Check API key
-    if (!process.env.GROQ_API_KEY) {
-      return res.status(500).json({ error: "Missing GROQ_API_KEY" });
-    }
-
     const { message } = req.body;
 
-    // Call Groq API
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -20,11 +13,11 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3-70b-8192",
+        model: "llama3-8b-8192", // 🔥 CHANGE THIS (IMPORTANT)
         messages: [
           {
             role: "system",
-            content: "You are a friendly and smart assistant for Tiger Town Pizza. Help users with menu, deals, and orders."
+            content: "You are a helpful pizza shop assistant."
           },
           {
             role: "user",
@@ -36,27 +29,22 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // DEBUG (you can remove later)
-    console.log("GROQ RESPONSE:", JSON.stringify(data, null, 2));
-
-    // Safe parsing
-    let reply = "Sorry, I couldn't respond.";
-
-    if (data && data.choices && data.choices.length > 0) {
-      reply =
-        data.choices[0]?.message?.content ||
-        data.choices[0]?.text ||
-        reply;
+    // 🔥 SHOW REAL ERROR IF ANY
+    if (data.error) {
+      console.error("GROQ ERROR:", data.error);
+      return res.status(500).json({
+        reply: "Groq Error: " + data.error.message
+      });
     }
 
-    return res.status(200).json({ reply });
+    return res.status(200).json({
+      reply: data.choices[0].message.content
+    });
 
   } catch (err) {
     console.error("SERVER ERROR:", err);
-
     return res.status(500).json({
-      error: "Server error",
-      details: err.message
+      reply: "Server error: " + err.message
     });
   }
 }
