@@ -53,7 +53,7 @@ export default function App() {
         <header className="flex justify-between items-center border-b border-border pb-6 mb-10">
           <div className="flex items-center gap-3">
             <img 
-              src="https://picsum.photos/seed/tigertownlogo/200/200" 
+              src="/logo.png" 
               className="w-10 h-10 rounded-full object-cover border-2 border-primary/50" 
               referrerPolicy="no-referrer"
               alt="Tiger Town Pizza Logo"
